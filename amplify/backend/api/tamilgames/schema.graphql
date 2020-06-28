@@ -1,0 +1,5 @@
+type Varthai @model {
+  id: ID!
+  varthai: String
+  hint: String!
+}

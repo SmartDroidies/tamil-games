@@ -1,0 +1,20 @@
+{
+    "demo": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-tamil-games-demo-122116-authRole",
+            "UnauthRoleArn": "arn:aws:iam::007281893211:role/amplify-tamil-games-demo-122116-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::007281893211:role/amplify-tamil-games-demo-122116-authRole",
+            "Region": "ap-south-1",
+            "DeploymentBucketName": "amplify-tamil-games-demo-122116-deployment",
+            "UnauthRoleName": "amplify-tamil-games-demo-122116-unauthRole",
+            "StackName": "amplify-tamil-games-demo-122116",
+            "StackId": "arn:aws:cloudformation:ap-south-1:007281893211:stack/amplify-tamil-games-demo-122116/6dbc9760-b95b-11ea-b444-063f7331dcfe",
+            "AmplifyAppId": "dvjvwei7n6ym"
+        },
+        "categories": {
+            "auth": {
+                "tamilgames99733e77": {}
+            }
+        }
+    }
+}
