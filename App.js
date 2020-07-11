@@ -1,82 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import {withAuthenticator} from 'aws-amplify-react-native';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import JumbleComponent from './src/components/JumbleComponent';
+import HomeComponent from './src/components/HomeComponent';
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
 
 Amplify.configure(config)
 
-import { API, graphqlOperation } from 'aws-amplify'
-import { createVarthai } from './src/graphql/mutations'
-import { listVarthais } from './src/graphql/queries'
-
-const initialState = { varthai: '', hint: '' }
-
-
-const App = () => {
-  const [formState, setFormState] = useState(initialState)
-  const [varthais, setVarthais] = useState([])
-
-  useEffect(() => {
-    fetchVarthais()
-  }, [])
-
-  function setInput(key, value) {
-    setFormState({ ...formState, [key]: value })
-  }
-
-  async function fetchVarthais() {
-    try {
-      const varthaiData = await API.graphql(graphqlOperation(listVarthais))
-      const varthais = varthaiData.data.listVarthais.items
-      setVarthais(varthais)
-    } catch (err) { console.log('error fetching varthais') }
-  }
-
-  async function addVarthai() {
-    try {
-      const varthai = { ...formState }
-      setVarthais([...varthais, varthai])
-      setFormState(initialState)
-      await API.graphql(graphqlOperation(createVarthai, {input: varthai}))
-    } catch (err) {
-      console.log('error creating varthai:', err)
+const navigator = createStackNavigator(
+  {
+    Home: HomeComponent,
+    Jumble: JumbleComponent
+  },
+  {
+    initialRouteName: "Home",
+    defaultNavigationOptions: {
+      title: "App"
     }
   }
+);
 
-  return (
-    <View style={styles.container}>
-      <TextInput
-        onChangeText={val => setInput('varthai', val)}
-        style={styles.input}
-        value={formState.name} 
-        placeholder="Varthai"
-      />
-      <TextInput
-        onChangeText={val => setInput('hint', val)}
-        style={styles.input}
-        value={formState.description}
-        placeholder="Hint"
-      />
-      <Button title="Create Vathai" onPress={addVarthai} />
-      {
-        varthais.map((varthai, index) => (
-          <View key={varthai.id ? varthai.id : index} style={styles.varthai}>
-            <Text style={styles.varthaiName}>{varthai.varthai}</Text>
-            <Text>{varthai.hint}</Text>
-          </View>
-        ))
-      }
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  varthai: {  marginBottom: 15 },
-  input: { height: 50, backgroundColor: '#ddd', marginBottom: 10, padding: 8 },
-  varthaiName: { fontSize: 18 }
-})
-
-export default withAuthenticator(App)
+export default createAppContainer(navigator);
