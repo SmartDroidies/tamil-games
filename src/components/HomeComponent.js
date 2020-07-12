@@ -1,14 +1,14 @@
 import React from "react";
-import { Text, StyleSheet, View, Button, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, View, Button } from "react-native";
 
 const HomeComponent = ({navigation}) => {
-  return <View>
+  return (<View>
     <Text style={styles.text}>My Home Screen - Dynamic Changes </Text>
     <Button
       onPress={() => navigation.navigate('Jumble')}
       title="Jumble" />
 
-  </View>
+  </View>)
 
 };
 

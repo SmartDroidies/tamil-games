@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 
 import { API, graphqlOperation } from 'aws-amplify'
-import { createVarthai } from './../../src/graphql/mutations'
-import { listVarthais } from './../../src/graphql/queries'
+import { createVarthai } from '../../graphql/mutations'
+import { listVarthais } from '../../graphql/queries'
 
 const initialState = { varthai: '', hint: '' }
 
 
-const JumbleComponent = () => {
+const CreateJumbleComponent = () => {
   const [formState, setFormState] = useState(initialState)
   const [varthais, setVarthais] = useState([])
 
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
   varthaiName: { fontSize: 18 }
 })
 
-export default JumbleComponent;
+export default CreateJumbleComponent;

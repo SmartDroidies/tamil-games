@@ -1,6 +1,6 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import JumbleComponent from './src/components/JumbleComponent';
+import JumbleComponent from './src/components/jumble/JumbleComponent';
 import HomeComponent from './src/components/HomeComponent';
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
