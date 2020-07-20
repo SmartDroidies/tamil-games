@@ -12,7 +12,7 @@
     "@react-native-community/netinfo": "5.9.2",
     "aws-amplify": "^3.0.18",
     "aws-amplify-react-native": "^4.2.1",
-    "expo": "~38.0.1",
+    "expo": "^38.0.8",
     "expo-status-bar": "^1.0.0",
     "react": "~16.11.0",
     "react-dom": "~16.11.0",

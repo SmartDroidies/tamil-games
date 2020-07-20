@@ -7,6 +7,9 @@ import config from './aws-exports';
 
 Amplify.configure(config)
 
+import { YellowBox } from 'react-native';
+YellowBox.ignoreWarnings(['Remote debugger']);
+
 const navigator = createStackNavigator(
   {
     Home: HomeComponent,
