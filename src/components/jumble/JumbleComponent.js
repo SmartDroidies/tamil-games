@@ -54,50 +54,72 @@ export default class JumbleComponent extends Component {
         this.setState({'shuffledVarthai':this.buildShuffledVarthai(this.shuffle([...this.state.varthai.varthai]))});
       } catch (err) { console.log('error fetching varthais') }
     }
-    render(){
+  render(){
     return(
-        <View style={styles.container}>
-          <View style={styles.varthaiWrapper}>
-            {
-              this.state.shuffledVarthai.map((letter,i)=>(
-                <View key={i} style={styles.finalLetterWrapper}>
-                  <Text style={styles.finalLetterText}>{this.state.finalVarthai.length<=this.state.shuffledVarthai.length?this.state.finalVarthai[i]:' '}</Text>
-                </View>
-              ))
-            }
-          </View>
-
-          <View style={styles.varthaiWrapper}>
-            {
-              this.state.shuffledVarthai.map((letter,i)=>(
-                <View key={i}>
-                  <View style={styles.textInputUnderLine}></View>
-                </View>
-              ))
-            }
-          </View>
-          <View style={styles.varthaiWrapper}>
-            {
-              this.state.shuffledVarthai.map((letter,i)=>{
-                console.log("onshuffledVarathai Change",letter);
-                return (<TouchableHighlight key={i} 
-                  style={(letter.pushed?styles.letterWrapperPushed:styles.letterWrapper)} 
-                onPress={()=>this.tapOnLetters(letter)}>
-                  <Text style={styles.letterText}>{letter.letterText}</Text>  
-                </TouchableHighlight>);    
-              })
-            }
+        <View style={styles.outterContainer}>
+          <View style={styles.container}>
+            <View style={styles.varthaiWrapper}>
+              {
+                this.state.shuffledVarthai.map((letter,i)=>(
+                  <View key={i} style={styles.finalLetterWrapper}>
+                    <Text style={styles.finalLetterText}>{this.state.finalVarthai.length<=this.state.shuffledVarthai.length?this.state.finalVarthai[i]:' '}</Text>
+                  </View>
+                ))
+              }
             </View>
-        </View>   
+            <View style={styles.varthaiWrapper}>
+              {
+                this.state.shuffledVarthai.map((letter,i)=>(
+                  <View key={i}>
+                    <View style={styles.textInputUnderLine}></View>
+                  </View>
+                ))
+              }
+            </View>
+            <View style={styles.varthaiWrapper}>
+              {
+                this.state.shuffledVarthai.map((letter,i)=>{
+                  console.log("onshuffledVarathai Change",letter.letterText,letter.pushed);
+                  return (<TouchableHighlight key={i} 
+                    style={(letter.pushed?styles.letterWrapperPushed:styles.letterWrapper)} 
+                  onPress={()=>this.tapOnLetters(letter)}>
+                    <Text style={styles.letterText}>{letter.letterText}</Text>  
+                  </TouchableHighlight>);    
+                })
+              }
+              </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Text>X</Text>
+          </View>
+          </View>
     );
-    }
+  }
 }
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', flexDirection:'column'},
+    outterContainer: { flex:1,justifyContent: 'flex-start', flexDirection:'row'},
+    container: { justifyContent: 'center', flexDirection:'column'},
+    buttonContainer:{ justifyContent: 'center', flexDirection:'column'},
     varthaiWrapper: { width:'100%', justifyContent:'space-evenly' , flexDirection:'row' ,padding: 10},
     textInputUnderLine : { width :50, height:5, backgroundColor : 'black'},
-    letterWrapper: {  width :50, height:50, backgroundColor: '#0000ff' ,borderRadius: 50, shadowColor:'gray'},
-    letterWrapperPushed:{  width :50, height:50, backgroundColor: '#0000f0' ,borderRadius: 50},
+    letterWrapper: {  
+        width :50, height:50, 
+        backgroundColor: '#0000ff',
+        borderRadius: 50,  
+        shadowOffset:{width:0 ,height:1},
+        shadowColor:'#000000',
+        shadowRadius:2 , 
+        shadowOpacity:0.8 ,
+        elevation:5},
+    letterWrapperPushed:{  
+        width :50, height:50, 
+        backgroundColor: '#f000f0',
+        borderRadius: 50,
+        shadowOffset:{width:0 ,height:1},
+        shadowColor:'#000000',
+        shadowRadius:2 , 
+        shadowOpacity:0.8 ,
+        elevation:5},
     letterText :{ fontSize: 25, height:'100%' ,color:'#ffffff' ,textAlign : 'center' , textAlignVertical:'center'},
     finalLetterWrapper: {  width :50, height:50},
     finalLetterText :{ fontSize: 25, height:'100%' ,color:'#000000' ,textAlign : 'center' , textAlignVertical:'center'}
