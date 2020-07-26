@@ -1,32 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-
-import { API, graphqlOperation } from 'aws-amplify'
-import { listVarthais } from '../../graphql/queries'
+import React, { Component } from 'react';
+import { StyleSheet, Text, View} from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import { render } from 'react-dom';
 
 const initialState = { varthai: 'HANISH', hint: '' }
-const JumbleComponent = () => {
-    const [varthai,setVarthai] = useState(initialState)
-    const [shuffledVarthai,setShuffledVarthai] = useState([])
-    const [finalVarthai, setFinalVarthai]= useState([])
-    useEffect(() => {
-      //fetchVarthais()
-      console.log('Shuffle Varthai Loaded')
-      let shuffledVarthaiArray=[];
-      shuffle([...varthai.varthai]).forEach((letter,i)=>{
-        shuffledVarthaiArray.push({'letterText':letter,'state':false});
-      });
-     // console.log(shuffledVarthaiArray);
-      setShuffledVarthai(shuffledVarthaiArray)
-    }, [varthai])//change it on change of varthai
+export default class JumbleComponent extends Component {
+   // const [varthai,setVarthai] = useState(initialState);
+    //const [shuffledVarthai,setShuffledVarthai] = useState(buildShuffledVarthai(shuffle([...varthai.varthai])))
+    //const [finalVarthai, setFinalVarthai]= useState([])
+    state = {
+      'varthai' : initialState,
+      'shuffledVarthai' : this.buildShuffledVarthai(
+        this.shuffle([...initialState.varthai])) ,
+      'finalVarthai' : []
+    };
+    componentDidMount(){
+      this.fetchVarthais();
+    }
+  
     
-    function tapOnLetters(letter,i){
-      if(varthai.varthai.length>=finalVarthai.length){
-       setFinalVarthai([...finalVarthai,letter.letterText])
+   tapOnLetters(letter){
+      //console.log("onPress",letter);
+      if(!letter.pushed&&this.state.varthai.varthai.length>=this.state.finalVarthai.length){
+       this.setState({'finalVarthai':[...this.state.finalVarthai,letter.letterText]});
+       letter.pushed=true;
+       this.setState({'shuffledVarthai':this.state.shuffledVarthai});
       }
     }
-    function shuffle(array) {
+   buildShuffledVarthai(shuffledVarthaiArray){
+      var shuffledVarthaiTmp=[];
+      shuffledVarthaiArray.map((letter,i)=>{
+        shuffledVarthaiTmp.push({'letterText':letter,'pushed':false});
+      });
+      return shuffledVarthaiTmp;
+  }
+   shuffle(array) {
         let i = array.length - 1;
         for (; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -37,74 +45,60 @@ const JumbleComponent = () => {
         return array;
     }
 
-    async function fetchVarthais() {
+    fetchVarthais() {
       try {
         //const varthaiData = await API.graphql(graphqlOperation(listVarthais))
         //const varthais = varthaiData.data.listVarthais.items
         //setVarthais(varthais)
         //setVarthai(varthais[0])
-        
+        this.setState({'shuffledVarthai':this.buildShuffledVarthai(this.shuffle([...this.state.varthai.varthai]))});
       } catch (err) { console.log('error fetching varthais') }
     }
-    
+    render(){
     return(
         <View style={styles.container}>
           <View style={styles.varthaiWrapper}>
-         {
-           finalVarthai.map((letter,i)=>(
-            <View key={i} style={styles.finalLetterWrapper} >
-              <Text style={styles.finalLetterText}>{finalVarthai[i]}</Text>  
-            </View>    
-          ))
-         }
-      </View>
+            {
+              this.state.shuffledVarthai.map((letter,i)=>(
+                <View key={i} style={styles.finalLetterWrapper}>
+                  <Text style={styles.finalLetterText}>{this.state.finalVarthai.length<=this.state.shuffledVarthai.length?this.state.finalVarthai[i]:' '}</Text>
+                </View>
+              ))
+            }
+          </View>
 
-       <View style={styles.varthaiWrapper}>
-         {
-           [...varthai.varthai].map((letter,i)=>(
-             <View key={i} style={styles.textInputUnderLineWrapper}>
-               <View style={styles.textInputUnderLine}></View>
-             </View>
-           ))          
-         }
-         {
-          <View style={styles.clearButtonWrapper}>
-            <Text style={styles.clearButton}>X</Text>
-          </View>
-        }
-      </View>
           <View style={styles.varthaiWrapper}>
-              {
-                (shuffledVarthai).map((letter,i)=>{
-                  console.log( " Shuffled Varthai  i="+i+", Letter="+letter.letterText);
-                  return (<TouchableHighlight key={i} className={'letterWrapper '+letter.state} style={styles.letterWrapper } onPress={()=>{tapOnLetters(letter)}}>
-                    <Text style={styles.letterText}>{letter.letterText}</Text>  
-                  </TouchableHighlight>);    
-                })
-              }
-              {
-              <View>
-                <Text style={styles.clearButton}></Text>
-              </View>
-              }
+            {
+              this.state.shuffledVarthai.map((letter,i)=>(
+                <View key={i}>
+                  <View style={styles.textInputUnderLine}></View>
+                </View>
+              ))
+            }
           </View>
-         
-        </View>
-        
-    )
+          <View style={styles.varthaiWrapper}>
+            {
+              this.state.shuffledVarthai.map((letter,i)=>{
+                console.log("onshuffledVarathai Change",letter);
+                return (<TouchableHighlight key={i} 
+                  style={(letter.pushed?styles.letterWrapperPushed:styles.letterWrapper)} 
+                onPress={()=>this.tapOnLetters(letter)}>
+                  <Text style={styles.letterText}>{letter.letterText}</Text>  
+                </TouchableHighlight>);    
+              })
+            }
+            </View>
+        </View>   
+    );
+    }
 }
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', flexDirection:'column'},
     varthaiWrapper: { width:'100%', justifyContent:'space-evenly' , flexDirection:'row' ,padding: 10},
-    textInputUnderLine : { width :30, height:5, marginTop:25,backgroundColor : 'black'},
-    textInputUnderLineWrapper:{width :30, height:30},
-    clearButton : { width :30, height:30,marginLeft: 16, color : 'red' ,fontSize:13 },
-    clearButtonWrapper: {  width :25, height:25,borderRadius: 25 , borderColor:'red',borderWidth:2, 
-     alignItems:'center'},
-    letterWrapper: {  width :30, height:30, backgroundColor: '#0000ff' ,borderRadius: 30},
-    letterText :{ fontSize: 15, height:'100%' ,color:'#ffffff' ,textAlign : 'center' , textAlignVertical:'center'},
-    finalLetterWrapper: {  width :30, height:30},
-    finalLetterText :{ fontSize: 15, height:'100%' ,color:'#000000' ,textAlign : 'center' , textAlignVertical:'center'}
-
+    textInputUnderLine : { width :50, height:5, backgroundColor : 'black'},
+    letterWrapper: {  width :50, height:50, backgroundColor: '#0000ff' ,borderRadius: 50, shadowColor:'gray'},
+    letterWrapperPushed:{  width :50, height:50, backgroundColor: '#0000f0' ,borderRadius: 50},
+    letterText :{ fontSize: 25, height:'100%' ,color:'#ffffff' ,textAlign : 'center' , textAlignVertical:'center'},
+    finalLetterWrapper: {  width :50, height:50},
+    finalLetterText :{ fontSize: 25, height:'100%' ,color:'#000000' ,textAlign : 'center' , textAlignVertical:'center'}
 });
-export default JumbleComponent;
