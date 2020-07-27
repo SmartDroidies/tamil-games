@@ -22,11 +22,21 @@ export default class JumbleComponent extends Component {
    tapOnLetters(letter){
       //console.log("onPress",letter);
       if(!letter.pushed&&this.state.varthai.varthai.length>=this.state.finalVarthai.length){
-       this.setState({'finalVarthai':[...this.state.finalVarthai,letter.letterText]});
        letter.pushed=true;
-       this.setState({'shuffledVarthai':this.state.shuffledVarthai});
+       let shuffledVarthaiArray=[...this.state.shuffledVarthai];
+       let stateTmp={'finalVarthai':[...this.state.finalVarthai,letter.letterText],
+       'shuffledVarthai':shuffledVarthaiArray};
+       //{'finalVarthai':[...this.state.finalVarthai,letter.letterText]}
+       this.setState(stateTmp);
       }
     }
+   clearAnswer(){
+    let shuffledVarthaiArray=[];
+    this.state.shuffledVarthai.map((varthai,i)=>(shuffledVarthaiArray.push({...varthai,'pushed':false})));
+    let stateTmp={'shuffledVarthai':shuffledVarthaiArray,
+    'finalVarthai':[]}
+    this.setState(stateTmp);
+   }
    buildShuffledVarthai(shuffledVarthaiArray){
       var shuffledVarthaiTmp=[];
       shuffledVarthaiArray.map((letter,i)=>{
@@ -79,9 +89,9 @@ export default class JumbleComponent extends Component {
             <View style={styles.varthaiWrapper}>
               {
                 this.state.shuffledVarthai.map((letter,i)=>{
-                  console.log("onshuffledVarathai Change",letter.letterText,letter.pushed);
+                  //console.log("onshuffledVarathai Change",letter.letterText,letter.pushed);
                   return (<TouchableHighlight key={i} 
-                    style={(letter.pushed?styles.letterWrapperPushed:styles.letterWrapper)} 
+                  style={(letter.pushed?styles.letterWrapperPushed:styles.letterWrapper)} 
                   onPress={()=>this.tapOnLetters(letter)}>
                     <Text style={styles.letterText}>{letter.letterText}</Text>  
                   </TouchableHighlight>);    
@@ -90,37 +100,49 @@ export default class JumbleComponent extends Component {
               </View>
           </View>
           <View style={styles.buttonContainer}>
-            <Text>X</Text>
+            <TouchableHighlight style={styles.buttonWrapper}>
+              <Text style={styles.buttonText} onPress={()=>this.clearAnswer()}>X</Text>
+            </TouchableHighlight>
           </View>
-          </View>
+        </View>
     );
   }
 }
 const styles = StyleSheet.create({
     outterContainer: { flex:1,justifyContent: 'flex-start', flexDirection:'row'},
-    container: { justifyContent: 'center', flexDirection:'column'},
-    buttonContainer:{ justifyContent: 'center', flexDirection:'column'},
+    container: { width:'85%',justifyContent: 'center', flexDirection:'column'},
+    buttonContainer:{ width:'15%', justifyContent: 'center', flexDirection:'column'},
     varthaiWrapper: { width:'100%', justifyContent:'space-evenly' , flexDirection:'row' ,padding: 10},
-    textInputUnderLine : { width :50, height:5, backgroundColor : 'black'},
+    buttonWrapper: {  
+      width :40, height:40, 
+      backgroundColor: '#ffffff',
+      borderRadius: 40, 
+      shadowOffset:{width:0 ,height:1},
+      shadowColor:'#000000',
+      shadowRadius:2 , 
+      shadowOpacity:0.8 ,
+      elevation:5},
+    buttonText:{color:'red',fontSize:25,fontWeight:'bold',textAlign : 'center' , textAlignVertical:'center'},
+    textInputUnderLine : { width :40, height:5, backgroundColor : 'black'},
     letterWrapper: {  
-        width :50, height:50, 
+        width :40, height:40, 
         backgroundColor: '#0000ff',
-        borderRadius: 50,  
+        borderRadius: 40,  
         shadowOffset:{width:0 ,height:1},
         shadowColor:'#000000',
         shadowRadius:2 , 
         shadowOpacity:0.8 ,
         elevation:5},
     letterWrapperPushed:{  
-        width :50, height:50, 
+        width :40, height:40, 
         backgroundColor: '#f000f0',
-        borderRadius: 50,
+        borderRadius: 40,
         shadowOffset:{width:0 ,height:1},
         shadowColor:'#000000',
         shadowRadius:2 , 
         shadowOpacity:0.8 ,
         elevation:5},
-    letterText :{ fontSize: 25, height:'100%' ,color:'#ffffff' ,textAlign : 'center' , textAlignVertical:'center'},
-    finalLetterWrapper: {  width :50, height:50},
-    finalLetterText :{ fontSize: 25, height:'100%' ,color:'#000000' ,textAlign : 'center' , textAlignVertical:'center'}
+    letterText :{ fontSize: 23, height:'100%' ,color:'#ffffff' ,textAlign : 'center' , textAlignVertical:'center'},
+    finalLetterWrapper: {  width :40, height:40},
+    finalLetterText :{ fontSize: 23, height:'100%' ,color:'#000000' ,textAlign : 'center' , textAlignVertical:'center'}
 });
